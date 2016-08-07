@@ -28,6 +28,8 @@ public class ContentManager : MonoBehaviour {
 
 	float targetCameraHeight = 0f;
 
+	GameObject input;
+
 	// timer
 	public float newCommentTimer = 60.0f;
 
@@ -53,7 +55,7 @@ public class ContentManager : MonoBehaviour {
 
 		// --- --- --- --- --- ADD INPUT RIGHT AWAY  --- --- --- --- --- --- //
 
-//		AddInput ();
+	//	AddInput ();
 
 
 	}
@@ -126,36 +128,38 @@ public class ContentManager : MonoBehaviour {
 
 	public void AddComment () {
 
+		if (commentNo == 0) {
 
-		//Debug.Log ("Add Comment called");
+			input = Instantiate (inputPrefab, Vector3.zero, Quaternion.identity) as GameObject;
+		
+			//targetCameraHeight = -3.5f * comments.Count + 3f;
+		//	comments.Add (input);
+			commentNo++;
 
-		commentNo++;
+		} else {
+			commentNo++;
 
-		// instantiates Comment
-		GameObject comment = Instantiate (commentPrefab, Vector3.zero, Quaternion.identity) as GameObject;
-		comment.transform.SetParent (contentHolder.transform);
+			// instantiates Comment
+			GameObject comment = Instantiate (commentPrefab, Vector3.zero, Quaternion.identity) as GameObject;
+			comment.transform.SetParent (contentHolder.transform);
 
-		//defines comment position and adds comment into commentsList
-		comment.transform.localPosition = new Vector3 (0f, 3.5f * comments.Count + verticalOffset, 0f);
-		comment.GetComponent<CommentManager> ().commentText.text = WrapText(CSVParser.getCellText (2, commentNo), 20);
+			//defines comment position and adds comment into commentsList
+			comment.transform.localPosition = new Vector3 (0f, 3.5f * comments.Count + verticalOffset, 0f);
+			comment.GetComponent<CommentManager> ().commentText.text = WrapText (CSVParser.getCellText (2, commentNo), 20);
 
-		CommentManager commentManager = comment.GetComponent<CommentManager> ();
-		Color[] palette = new Color[2]; 
-		commentManager.commentTexture.material.mainTexture = IconGenerator.create (8, Color.black, true, palette);
-		comments.Add (comment);
 
-		// reset variable for new camera position
-		targetCameraHeight = -3.5f * comments.Count + 3f;
+			CommentManager commentManager = comment.GetComponent<CommentManager> ();
+			Color[] palette = new Color[2]; 
+			commentManager.commentTexture.material.mainTexture = IconGenerator.create (8, Color.black, true, palette);
+			comments.Add (comment);
 
-	}
+			// reset variable for new camera position
+			targetCameraHeight = -3.5f * comments.Count + 3f;
 
-	/*
-	public void AddInput () {
-		GameObject input = Instantiate (inputPrefab, Vector3.zero, Quaternion.identity) as GameObject;
+		}
+
 		input.transform.localPosition = new Vector3 (0f, 3.5f * comments.Count + verticalOffset, 0f);
-		targetCameraHeight = -3.5f * comments.Count + 3f;
-	}*/
-
+	}
 
 	// *** new method vvv
 	// Wrap text by line height

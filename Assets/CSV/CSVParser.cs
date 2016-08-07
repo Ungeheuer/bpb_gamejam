@@ -29,8 +29,7 @@ public class CSVParser : MonoBehaviour
 
 	static public string getCellText(int row, int col)
 	{
-		Debug.Log(grid.GetValue(row,col));
-		return (string) grid.GetValue(row, col);
+		return ConvertToUnicode((string) grid.GetValue(row, col));	// **** replace
 	}
 
 	// outputs the content of a 2D array, useful for checking the importer
@@ -89,4 +88,22 @@ public class CSVParser : MonoBehaviour
 		//	System.Text.RegularExpressions.RegexOptions.ExplicitCapture)
 		//	select m.Groups[1].Value).ToArray();
 	}
+
+
+	// **** new
+	// converts special characters to unicode
+	static private string ConvertToUnicode(string input)
+	{
+
+		return input;
+		/*
+		string output = input.Replace ("Ä", "&#196;");
+		output = input.Replace ("Ö", "&#214;");
+		output = input.Replace ("Ü", "&#220;");
+		output = input.Replace ("ä", "&#228;");
+		output = input.Replace ("ö", "&#246;");
+		output = input.Replace ("ü", "&#252;");
+		output = input.Replace ("ß", "&#223;");*/
+	}
+
 }
