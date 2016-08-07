@@ -12,11 +12,13 @@ public class CommentManager : MonoBehaviour {
 
 	// Textfields to connect with csv-file
 	[SerializeField] TextMesh nameText;
-	[SerializeField] TextMesh commentText;
+	public TextMesh commentText;
 	[SerializeField] TextMesh likeNumber;
 
 	// Like Button
 	[SerializeField] GameObject likeButton;
+
+
 
 	// Use this for initialization
 	void Start () {

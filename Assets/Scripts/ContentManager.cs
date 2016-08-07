@@ -6,6 +6,7 @@ public class ContentManager : MonoBehaviour {
 
 	[HideInInspector] public static ContentManager single;
 	[SerializeField] GameObject commentPrefab;
+	[SerializeField] GameObject inputPrefab;
 
 	[SerializeField] int toScrollViewFrames = 5;
 	[SerializeField] float verticalOffset = 2.5f;
@@ -30,6 +31,7 @@ public class ContentManager : MonoBehaviour {
 	// timer
 	public float newCommentTimer = 60.0f;
 
+	int commentNo = 0;
 
 	void Awake(){
 		single = this;
@@ -47,11 +49,16 @@ public class ContentManager : MonoBehaviour {
 
 		users = GameObject.Find ("HeaderManager").GetComponent<userCounter> ();
 		newCommentTimer = (float)users.userCount;
+
+
+		// --- --- --- --- --- ADD INPUT RIGHT AWAY  --- --- --- --- --- --- //
+
+//		AddInput ();
+
+
 	}
 	
 	void Update(){
-
-
 
 		// --- --- --- ---  --- ADD COMMENT AFTER TIME --- --- --- --- --- //
 
@@ -122,12 +129,16 @@ public class ContentManager : MonoBehaviour {
 
 		//Debug.Log ("Add Comment called");
 
+		commentNo++;
+
 		// instantiates Comment
 		GameObject comment = Instantiate (commentPrefab, Vector3.zero, Quaternion.identity) as GameObject;
 		comment.transform.SetParent (contentHolder.transform);
 
 		//defines comment position and adds comment into commentsList
 		comment.transform.localPosition = new Vector3 (0f, 3.5f * comments.Count + verticalOffset, 0f);
+		comment.GetComponent<CommentManager> ().commentText.text = WrapText(CSVParser.getCellText (2, commentNo), 20);
+
 		CommentManager commentManager = comment.GetComponent<CommentManager> ();
 		Color[] palette = new Color[2]; 
 		commentManager.commentTexture.material.mainTexture = IconGenerator.create (8, Color.black, true, palette);
@@ -136,20 +147,54 @@ public class ContentManager : MonoBehaviour {
 		// reset variable for new camera position
 		targetCameraHeight = -3.5f * comments.Count + 3f;
 
-
-		/* new comment needs: - name (line01, row 01)
-		 * - comment (line 01, row 02)
-		 * - likes (line 01, row 03)
-		 * - rating (line 01, row 04)
-		 * 
-		 * 
-		 * 
-		 * */
-
 	}
 
+	/*
+	public void AddInput () {
+		GameObject input = Instantiate (inputPrefab, Vector3.zero, Quaternion.identity) as GameObject;
+		input.transform.localPosition = new Vector3 (0f, 3.5f * comments.Count + verticalOffset, 0f);
+		targetCameraHeight = -3.5f * comments.Count + 3f;
+	}*/
 
 
+	// *** new method vvv
+	// Wrap text by line height
+	private string WrapText(string input, int lineLength){
+
+		// Split string by char " "         
+		string[] words = input.Split(" "[0]);
+
+		// Prepare result
+		string result = "";
+
+		// Temp line string
+		string line = "";
+
+		// for each all words        
+		foreach(string s in words){
+			// Append current word into line
+			string temp = line + " " + s;
+
+			// If line length is bigger than lineLength
+			if(temp.Length > lineLength){
+
+				// Append current line into result
+				result += line + "\n";
+				// Remain word append into new line
+				line = s;
+			}
+			// Append current word into current line
+			else {
+				line = temp;
+			}
+		}
+
+		// Append last line into result        
+		result += line;
+
+		// Remove first " " char
+		return result.Substring(1,result.Length-1);
+	}
 
 
 

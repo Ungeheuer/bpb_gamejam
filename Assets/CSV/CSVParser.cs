@@ -16,13 +16,21 @@ using System.Linq;
 
 public class CSVParser : MonoBehaviour 
 {
-	public TextAsset csvFile; 
+	public TextAsset csvFile;
+	static public string[,] grid;
+
 	public void Start()
 	{
-		string[,] grid = SplitCsvGrid(csvFile.text);
+		grid = SplitCsvGrid(csvFile.text);
 		Debug.Log("size = " + (1+ grid.GetUpperBound(0)) + "," + (1 + grid.GetUpperBound(1))); 
 
 		DebugOutputGrid(grid); 
+	}
+
+	static public string getCellText(int row, int col)
+	{
+		Debug.Log(grid.GetValue(row,col));
+		return (string) grid.GetValue(row, col);
 	}
 
 	// outputs the content of a 2D array, useful for checking the importer
@@ -75,9 +83,10 @@ public class CSVParser : MonoBehaviour
 	// splits a CSV row 
 	static public string[] SplitCsvLine(string line)
 	{
-		return (from System.Text.RegularExpressions.Match m in System.Text.RegularExpressions.Regex.Matches(line,
-			@"(((?<x>(?=[,\r\n]+))|""(?<x>([^""]|"""")+)""|(?<x>[^,\r\n]+)),?)", 
-			System.Text.RegularExpressions.RegexOptions.ExplicitCapture)
-			select m.Groups[1].Value).ToArray();
+		return line.Split(';');
+		//return (from System.Text.RegularExpressions.Match m in System.Text.RegularExpressions.Regex.Matches(line,
+		//	@"(((?<x>(?=[,\r\n]+))|""(?<x>([^""]|"""")+)""|(?<x>[^,\r\n]+)),?)", 
+		//	System.Text.RegularExpressions.RegexOptions.ExplicitCapture)
+		//	select m.Groups[1].Value).ToArray();
 	}
 }
