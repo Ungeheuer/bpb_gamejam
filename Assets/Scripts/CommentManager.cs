@@ -19,17 +19,16 @@ public class CommentManager : MonoBehaviour {
 	[SerializeField] GameObject likeButton;
 
 
-	//meta-information	// ***** new (21-23)
+	//meta-information
 	public int commentNo;
 	public int deleteImpact;
 	public int acceptImpact;
 
-
-
+	ContentManager cm;
 
 	// Use this for initialization
 	void Start () {
-		
+		cm = this.gameObject.AddComponent<ContentManager> ();
 		deleteButton.SetActive (true);
 	}
 
@@ -60,10 +59,18 @@ public class CommentManager : MonoBehaviour {
 
 	public void ButtonDelete(){
 		GameObject.Find ("HeaderManager").GetComponent<userCounter> ().ImpactOnUsers (deleteImpact);				// ***** new (60-62)
-		ContentManager.single.addDeletedComment(new string[] {	// name, text, delete
-			CSVParser.getCellText (1, commentNo), CSVParser.getCellText (2, commentNo), CSVParser.getCellText (7, commentNo)});	// ***** new
+		cm.addDeletedComment(new string[] {	// name, text, delete
+			CSVParser.getCellText (1, commentNo), CSVParser.getCellText (2, commentNo), CSVParser.getCellText (7, commentNo), "ZENSUR!!!"});	// XXXX change
 		Destroy (this.gameObject);
 	}
+
+	// XXX new method
+	public void Accept(){
+		GameObject.Find ("HeaderManager").GetComponent<userCounter> ().ImpactOnUsers (acceptImpact);
+		cm.addDeletedComment(new string[] {	// name, text, insert
+			CSVParser.getCellText (1, commentNo), CSVParser.getCellText (2, commentNo), CSVParser.getCellText (8, commentNo), "geht gar nicht!"});	// XXXX change
+	}
+
 		
 }
 	

@@ -51,10 +51,13 @@
      <Compile Include="Assets\Scripts\ButtonController.cs" />
      <Compile Include="Assets\Scripts\CommentManager.cs" />
      <Compile Include="Assets\Scripts\ContentManager.cs" />
+     <Compile Include="Assets\Scripts\FinalScreenManager.cs" />
      <Compile Include="Assets\Scripts\HSBColor.cs" />
      <Compile Include="Assets\Scripts\HeaderManager.cs" />
      <Compile Include="Assets\Scripts\HolderController.cs" />
      <Compile Include="Assets\Scripts\IconGenerator.cs" />
+     <Compile Include="Assets\Scripts\LevelTimer.cs" />
+     <Compile Include="Assets\Scripts\StartGame.cs" />
      <Compile Include="Assets\Scripts\TextureController.cs" />
      <Compile Include="Assets\Scripts\userCounter.cs" />
      <None Include="Assets\Interface\Fonts\Josefin_Sans\OFL.txt" />

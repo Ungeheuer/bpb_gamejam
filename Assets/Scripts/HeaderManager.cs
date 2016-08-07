@@ -8,6 +8,7 @@ public class HeaderManager : MonoBehaviour {
 	System.DateTime date;
 	userCounter users;
 
+
 	// Use this for initialization
 	void Awake () {
 		users = this.gameObject.AddComponent<userCounter> ();
