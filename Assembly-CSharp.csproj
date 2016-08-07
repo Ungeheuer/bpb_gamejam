@@ -48,14 +48,15 @@
      <Compile Include="Assets\CSV\CSVParser.cs" />
      <Compile Include="Assets\CSV\ReadDemo.cs" />
      <Compile Include="Assets\CommentCreator.cs" />
-     <Compile Include="Assets\Scripts\AddButtonController.cs" />
      <Compile Include="Assets\Scripts\ButtonController.cs" />
      <Compile Include="Assets\Scripts\CommentManager.cs" />
      <Compile Include="Assets\Scripts\ContentManager.cs" />
      <Compile Include="Assets\Scripts\HSBColor.cs" />
      <Compile Include="Assets\Scripts\HeaderManager.cs" />
      <Compile Include="Assets\Scripts\HolderController.cs" />
+     <Compile Include="Assets\Scripts\IconGenerator.cs" />
      <Compile Include="Assets\Scripts\TextureController.cs" />
+     <Compile Include="Assets\Scripts\userCounter.cs" />
      <None Include="Assets\Interface\Fonts\Josefin_Sans\OFL.txt" />
      <None Include="Assets\Interface\Fonts\Roboto_Mono\LICENSE.txt" />
      <None Include="Assets\Interface\Fonts\Indie_Flower\OFL.txt" />

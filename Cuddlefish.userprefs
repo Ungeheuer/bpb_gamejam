@@ -1,6 +1,14 @@
 ﻿<Properties StartupItem="Assembly-CSharp.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
-  <MonoDevelop.Ide.Workbench />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/ContentManager.cs">
+    <Files>
+      <File FileName="Assets/Scripts/userCounter.cs" Line="21" Column="3" />
+      <File FileName="Assets/Scripts/HeaderManager.cs" Line="15" Column="3" />
+      <File FileName="Assets/CSV/CSVParser.cs" Line="25" Column="26" />
+      <File FileName="Assets/Scripts/CommentManager.cs" Line="10" Column="21" />
+      <File FileName="Assets/Scripts/ContentManager.cs" Line="136" Column="44" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>

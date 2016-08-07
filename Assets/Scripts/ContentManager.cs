@@ -23,6 +23,8 @@ public class ContentManager : MonoBehaviour {
 	List<GameObject> comments;
 	GameObject contentHolder;
 
+	userCounter users;
+
 	float targetCameraHeight = 0f;
 
 	// timer
@@ -42,6 +44,9 @@ public class ContentManager : MonoBehaviour {
 		contentHolder = new GameObject ("ContentHolder");
 		contentHolder.transform.SetParent (this.gameObject.transform);
 		contentHolder.transform.localPosition = Vector3.zero;
+
+		users = GameObject.Find ("HeaderManager").GetComponent<userCounter> ();
+		newCommentTimer = (float)users.userCount;
 	}
 	
 	void Update(){
@@ -56,7 +61,7 @@ public class ContentManager : MonoBehaviour {
 		{
 			AddComment();
 		//Debug.Log ("target Time = 0");
-			newCommentTimer = 60f;
+			newCommentTimer = (float)users.userCount;
 		}
 
 		newCommentTimer -= 1f;
@@ -123,7 +128,9 @@ public class ContentManager : MonoBehaviour {
 
 		//defines comment position and adds comment into commentsList
 		comment.transform.localPosition = new Vector3 (0f, 3.5f * comments.Count + verticalOffset, 0f);
-
+		CommentManager commentManager = comment.GetComponent<CommentManager> ();
+		Color[] palette = new Color[2]; 
+		commentManager.commentTexture.material.mainTexture = IconGenerator.create (8, Color.black, true, palette);
 		comments.Add (comment);
 
 		// reset variable for new camera position

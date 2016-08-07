@@ -7,7 +7,7 @@ public class CommentManager : MonoBehaviour {
 	// button to delete Comments
 	[SerializeField] GameObject deleteButton;
 	// Renderer / Style 
-	[SerializeField] MeshRenderer commentTexture;
+	public MeshRenderer commentTexture;
 	[SerializeField] MeshRenderer commentBackground;
 
 	// Textfields to connect with csv-file

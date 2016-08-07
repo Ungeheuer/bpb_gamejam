@@ -6,15 +6,20 @@ public class HeaderManager : MonoBehaviour {
 	[SerializeField] TextMesh HeaderText;
 
 	System.DateTime date;
+	userCounter users;
 
 	// Use this for initialization
-	void Start () {
+	void Awake () {
+		users = this.gameObject.AddComponent<userCounter> ();
 	
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		date = System.DateTime.Now;
-		HeaderText.text = date.DayOfWeek + ", " + date.ToString ("HH:mm:ss");
+
+		HeaderText.text = "user: " + users.userCount;
+
+	//	date = System.DateTime.Now;
+	//	HeaderText.text = date.DayOfWeek + ", " + date.ToString ("HH:mm:ss");
 	}
 }
