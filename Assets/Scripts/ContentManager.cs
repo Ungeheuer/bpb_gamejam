@@ -19,9 +19,11 @@ public class ContentManager : MonoBehaviour {
 	bool scrolling = false;
 
 	public bool occupied;
+	public bool hasGameStarted = false;
 	public GameObject occupiedBy;
 
 	List<GameObject> comments;
+
 	GameObject contentHolder;
 
 	userCounter users;
@@ -32,14 +34,21 @@ public class ContentManager : MonoBehaviour {
 
 	// timer
 	public float newCommentTimer = 60.0f;
+	public float eraseCommentTimer = 120.0f;
 
 	int commentNo = 0;
+
+	List<string[]> deletedComments;		// ***** new
+	List<string[]> acceptedComments;	// ***** new
+
 
 	void Awake(){
 		single = this;
 
 		// new List that holds all comments
 		comments = new List<GameObject> ();
+		deletedComments = new List<string[]> ();	// ***** new
+		acceptedComments = new List<string[]> ();	// ***** new
 	}
 
 
@@ -51,13 +60,6 @@ public class ContentManager : MonoBehaviour {
 
 		users = GameObject.Find ("HeaderManager").GetComponent<userCounter> ();
 		newCommentTimer = (float)users.userCount;
-
-
-		// --- --- --- --- --- ADD INPUT RIGHT AWAY  --- --- --- --- --- --- //
-
-	//	AddInput ();
-
-
 	}
 	
 	void Update(){
@@ -83,6 +85,7 @@ public class ContentManager : MonoBehaviour {
 			//Debug.Log ("mouse down!");
 			mouseDown = true;
 			mouseDownFrames = 0;
+			hasGameStarted = true;
 		} else if (Input.GetMouseButtonUp (0)) {
 			//Debug.Log ("mouse up!");
 			mouseDown = false;
@@ -117,6 +120,31 @@ public class ContentManager : MonoBehaviour {
 
 
 		// --- --- --- --- --- --- --- --- ---  --- --- --- --- --- --- //
+
+
+
+
+		// --- --- --- ---  --- ERASE COMMENT AFTER TIME --- --- --- --- --- //
+		/*
+		eraseCommentTimer = 200f; 
+		eraseCommentTimer -= Time.deltaTime;
+
+		if (eraseCommentTimer <= 0f)
+		{
+			int number = comments.Count;
+			GameObject lastComment;
+
+			lastComment = comments[number - 1];
+				
+			
+			// destroy last GameObject in List comments
+			Destroy (lastComment);
+		
+			eraseCommentTimer = 200f; 
+		}*/
+
+	
+		// --- --- --- --- --- --- --- --- ---  --- --- --- --- --- --- //
 	}
 
 	public void SetOccupied(bool _occupied, GameObject _occupiedBy){
@@ -128,15 +156,14 @@ public class ContentManager : MonoBehaviour {
 
 	public void AddComment () {
 
+
 		if (commentNo == 0) {
 
 			input = Instantiate (inputPrefab, Vector3.zero, Quaternion.identity) as GameObject;
-		
-			//targetCameraHeight = -3.5f * comments.Count + 3f;
-		//	comments.Add (input);
+
 			commentNo++;
 
-		} else {
+		} else if (commentNo >= 1 && hasGameStarted == true) {
 			commentNo++;
 
 			// instantiates Comment
@@ -144,8 +171,12 @@ public class ContentManager : MonoBehaviour {
 			comment.transform.SetParent (contentHolder.transform);
 
 			//defines comment position and adds comment into commentsList
-			comment.transform.localPosition = new Vector3 (0f, 3.5f * comments.Count + verticalOffset, 0f);
-			comment.GetComponent<CommentManager> ().commentText.text = WrapText (CSVParser.getCellText (2, commentNo), 20);
+			comment.transform.localPosition = new Vector3 (0f, 3.9f * comments.Count + verticalOffset, 0f);
+			comment.GetComponent<CommentManager> ().commentText.text = WrapText (CSVParser.getCellText (2, commentNo), 30);
+			comment.GetComponent<CommentManager> ().nameText.text = WrapText (CSVParser.getCellText (1, commentNo), 05);
+
+			comment.GetComponent<CommentManager> ().deleteImpact = int.Parse(CSVParser.getCellText (7, commentNo));	// ***** new
+			comment.GetComponent<CommentManager> ().acceptImpact = int.Parse(CSVParser.getCellText (8, commentNo));	// ***** new
 
 
 			CommentManager commentManager = comment.GetComponent<CommentManager> ();
@@ -153,12 +184,21 @@ public class ContentManager : MonoBehaviour {
 			commentManager.commentTexture.material.mainTexture = IconGenerator.create (8, Color.black, true, palette);
 			comments.Add (comment);
 
-			// reset variable for new camera position
-			targetCameraHeight = -3.5f * comments.Count + 3f;
-
 		}
 
-		input.transform.localPosition = new Vector3 (0f, 3.5f * comments.Count + verticalOffset, 0f);
+		input.transform.localPosition = new Vector3 (0f, -3.9f * comments.Count + verticalOffset, 0f);
+		targetCameraHeight = -3.5f * comments.Count + 3f;
+
+
+
+		for (int i = 0; i < comments.Count; i++) {
+			if (comments.Count >= 10) {
+				GameObject lastComment = comments[comments.Count-10];
+				Destroy (lastComment);
+				//comments[i] = comments[i- 1];
+				//GameObject firstComment = comments [i - 1];
+			}
+		}
 	}
 
 	// *** new method vvv
@@ -201,7 +241,10 @@ public class ContentManager : MonoBehaviour {
 	}
 
 
-
+	public void addDeletedComment(string[] commentInfo)
+	{
+		deletedComments.Add (commentInfo);
+	}
 
 
 }

@@ -3,8 +3,6 @@ using System.Collections;
 
 public class userCounter : MonoBehaviour {
 
-	// timer
-	public float userRandomizer = 60.0f;
 
 	public int userCount = 100;
 
@@ -17,12 +15,14 @@ public class userCounter : MonoBehaviour {
 	void Update () {
 
 
-		userRandomizer -= Time.deltaTime;
-
-		if (userRandomizer <= 0f)
-		{
-			userCount++;
-		}
 	
 	}
+
+
+	// change user counter due to moderative (in-)action	// ***** new method
+	public void ImpactOnUsers(int change)
+	{
+		userCount = userCount + change;
+	}
+
 }

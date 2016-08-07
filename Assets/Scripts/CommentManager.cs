@@ -11,12 +11,19 @@ public class CommentManager : MonoBehaviour {
 	[SerializeField] MeshRenderer commentBackground;
 
 	// Textfields to connect with csv-file
-	[SerializeField] TextMesh nameText;
+	public TextMesh nameText;
 	public TextMesh commentText;
 	[SerializeField] TextMesh likeNumber;
 
 	// Like Button
 	[SerializeField] GameObject likeButton;
+
+
+	//meta-information	// ***** new (21-23)
+	public int commentNo;
+	public int deleteImpact;
+	public int acceptImpact;
+
 
 
 
@@ -52,6 +59,9 @@ public class CommentManager : MonoBehaviour {
 
 
 	public void ButtonDelete(){
+		GameObject.Find ("HeaderManager").GetComponent<userCounter> ().ImpactOnUsers (deleteImpact);				// ***** new (60-62)
+		ContentManager.single.addDeletedComment(new string[] {	// name, text, delete
+			CSVParser.getCellText (1, commentNo), CSVParser.getCellText (2, commentNo), CSVParser.getCellText (7, commentNo)});	// ***** new
 		Destroy (this.gameObject);
 	}
 		
