@@ -6,11 +6,12 @@ public class CommentManager : MonoBehaviour {
 
 	// button to delete Comments
 	[SerializeField] GameObject deleteButton;
+
 	// Renderer / Style 
 	public MeshRenderer commentTexture;
 	[SerializeField] MeshRenderer commentBackground;
 
-	// Textfields to connect with csv-file
+	// Textmeshes to connect with csv-file
 	public TextMesh nameText;
 	public TextMesh commentText;
 	[SerializeField] TextMesh likeNumber;
@@ -18,59 +19,48 @@ public class CommentManager : MonoBehaviour {
 	// Like Button
 	[SerializeField] GameObject likeButton;
 
-
 	//meta-information
-	public int commentNo;
-	public int deleteImpact;
-	public int acceptImpact;
+	[HideInInspector] public int commentNo;
+	[HideInInspector] public int deleteImpact;
+	[HideInInspector] public int acceptImpact;
 
+	// external script references
 	ContentManager cm;
 
-	// Use this for initialization
+
 	void Start () {
-		cm = this.gameObject.AddComponent<ContentManager> ();
-		deleteButton.SetActive (true);
+		cm = GameObject.Find ("ContentManager").GetComponent<ContentManager> ();
 	}
 
-	// Update is called once per frame
-	void Update () {
-		
-	
-	}
-
-	public void HitButton(string name){
-	
-	if (name == "delete") {
-			ButtonDelete ();
-		}
-	}
-
-	public void ButtonPlay(){
-
-		deleteButton.SetActive (false);
-	}
-
-	public void ButtonReset(){
-
-		deleteButton.SetActive (true);
-	}
+	// --- --- --- --- --- --- --- --- INSERT TEXT --- --- --- --- --- --- --- --- --- //
+	// --- called by ContentManager, fills Textmeshes with content stored in csv-file --- //
+	public void InsertTexts (int _commentNo) {
+		commentNo = _commentNo;
+		commentText.text = WrapText.wrap (CSVParser.getCellText (2, commentNo), 30);
+		nameText.text = CSVParser.getCellText (1, commentNo);
+		likeNumber.text = CSVParser.getCellText (3, commentNo);
+		deleteImpact = int.Parse(CSVParser.getCellText (7, commentNo));	
+		acceptImpact = int.Parse(CSVParser.getCellText (8, commentNo));
+	} // --- --- --- --- --- --- close insert text --- --- --- --- --- --- --- --- --- //
 
 
-
+	// --- --- --- --- --- --- --- --- BUTTON & SAVING --- --- --- --- --- --- --- --- --- //
+	// --- if button is pressed, it deletes the comment but saves all content --- //
 	public void ButtonDelete(){
-		GameObject.Find ("HeaderManager").GetComponent<userCounter> ().ImpactOnUsers (deleteImpact);				// ***** new (60-62)
+		GameObject.Find ("HeaderManager").GetComponent<userCounter> ().ImpactOnUsers (deleteImpact);
 		cm.addDeletedComment(new string[] {	// name, text, delete
-			CSVParser.getCellText (1, commentNo), CSVParser.getCellText (2, commentNo), CSVParser.getCellText (7, commentNo), "ZENSUR!!!"});	// XXXX change
+			CSVParser.getCellText (1, commentNo), CSVParser.getCellText (2, commentNo), CSVParser.getCellText (7, commentNo), "Zensur?"});
 		Destroy (this.gameObject);
-	}
+	} // --- --- --- --- --- --- close button delete --- --- --- --- --- --- --- --- --- //
 
-	// XXX new method
+
+	// --- if button is not pressed but should have, content is saved and impact and users calculated --- //
 	public void Accept(){
 		GameObject.Find ("HeaderManager").GetComponent<userCounter> ().ImpactOnUsers (acceptImpact);
 		cm.addDeletedComment(new string[] {	// name, text, insert
-			CSVParser.getCellText (1, commentNo), CSVParser.getCellText (2, commentNo), CSVParser.getCellText (8, commentNo), "geht gar nicht!"});	// XXXX change
-	}
+			CSVParser.getCellText (1, commentNo), CSVParser.getCellText (2, commentNo), CSVParser.getCellText (8, commentNo), "AGB-Verstoß"});
+	} // --- --- --- --- --- --- close comment accepted --- --- --- --- --- --- --- --- --- //
+	// --- --- --- --- --- --- --- --- close button & saving section --- --- --- --- --- -- //	
 
-		
 }
 	

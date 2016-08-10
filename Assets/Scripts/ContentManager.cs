@@ -4,48 +4,45 @@ using System.Collections.Generic;
 
 public class ContentManager : MonoBehaviour {
 
-	[HideInInspector] public static ContentManager single;
+	// prefabs
 	[SerializeField] GameObject commentPrefab;
 	[SerializeField] GameObject inputPrefab;
 
+	// scrolling & mouse-ctrls
 	[SerializeField] int toScrollViewFrames = 5;
 	[SerializeField] float verticalOffset = 2.5f;
-
-	bool mouseDown = false;
-	int mouseDownFrames;
 	float scrollViewLimit = 5f;
 	float scrollViewStart;
 	Vector3 contentStartPosition;
 	bool scrolling = false;
-
-	public bool occupied;
-	public bool hasGameStarted = false;
-	public GameObject occupiedBy;
-
-	List<GameObject> comments;
-
-	GameObject contentHolder;
-
-	userCounter users;
-
 	float targetCameraHeight = 0f;
 
-	[SerializeField] GameObject input;
+	bool mouseDown = false;
+	int mouseDownFrames;
 
-	// timer
-	public float newCommentTimer = 20.0f;
+	// game ctrls
+	public bool hasGameStarted = false;
+	GameObject contentHolder;
 
-
-	public int commentNo = 0;
-
+	// lists
+	List<GameObject> comments;
 	List<string[]> deletedComments;		
 	List<string[]> acceptedComments;	
 
+	// external script references
+	userCounter users;
+
+	// variables & objects
+	[SerializeField] GameObject input;
+	public int commentNo = 0;
+
+	// timer
+	public float newCommentTimer = 0f;
+	float newCommentSpeed = 30f;
+
 
 	void Awake(){
-		single = this;
-
-		// new List that holds all comments
+		// lists to contain comments
 		comments = new List<GameObject> ();
 		deletedComments = new List<string[]> ();	
 		acceptedComments = new List<string[]> ();	
@@ -53,117 +50,95 @@ public class ContentManager : MonoBehaviour {
 
 
 	void Start () {
-		// contentholder holds all comments
+		// contentholder contains all comments in unity-hierarchy
 		contentHolder = new GameObject ("ContentHolder");
 		contentHolder.transform.SetParent (this.gameObject.transform);
 		contentHolder.transform.localPosition = Vector3.zero;
 
+		// finds external scripts: userCounter.cs
 		users = GameObject.Find ("HeaderManager").GetComponent<userCounter> ();
-		newCommentTimer = (float)users.userCount;
+
+		// adds first comment (= news input) asap
+		AddComment ();
 	}
-	
+
+
 	void Update(){
 
-		// --- --- --- ---  --- ADD COMMENT AFTER TIME --- --- --- --- --- //
+		if (hasGameStarted) {
+			// --- --- --- ---  --- ADD COMMENT AFTER TIME --- --- --- --- --- //
+			newCommentTimer -= Time.deltaTime;
 
-		newCommentTimer -= Time.deltaTime;
-
-		if (newCommentTimer <= 0f)
-		{
-			AddComment();
-			newCommentTimer = (float)users.userCount;
-		}
-
-		//if (hasGameStarted == true) {
-			newCommentTimer -= 1f;
-		//}
-		// --- --- --- --- --- --- --- --- ---  --- --- --- --- --- --- //
+			if (newCommentTimer <= 0f) {
+				AddComment ();
+				newCommentTimer = (float)users.userCount / newCommentSpeed;
+				Debug.Log ("Game has started, waiting for first Comment to start in: " + newCommentTimer);
+			}
+		}   // --- --- --- --- --- close comment adding  --- --- --- --- --- --- //
 
 
 		// --- --- --- ---  --- SCROLLING Controls --- --- --- --- --- //
 		if (Input.GetMouseButtonDown (0)) {
-			//Debug.Log ("mouse down!");
+			Debug.Log ("mouse down!");
 			mouseDown = true;
 			mouseDownFrames = 0;
 			hasGameStarted = true;
 
 		} else if (Input.GetMouseButtonUp (0)) {
-			//Debug.Log ("mouse up!");
 			mouseDown = false;
 			scrolling = false;
-			SetOccupied (false, null);
+
 
 		} else if (!scrolling && mouseDown) {
 			mouseDownFrames++;
-			//Debug.Log (mouseDownFrames);
+
 			if (mouseDownFrames >= toScrollViewFrames) {
 				scrollViewStart = Input.mousePosition.y;
 				contentStartPosition = contentHolder.transform.localPosition;
 				scrolling = true;
-				SetOccupied (true, this.gameObject);
 			}
+
 		} else if (scrolling && mouseDown) {
-			//Debug.Log ("scrollViewStart: " + scrollViewStart + ", " + "mouseInput.y: " + Input.mousePosition.y);
 			float pixelScrollDifference = Input.mousePosition.y - scrollViewStart;
 			float newContentY = Camera.main.ScreenToWorldPoint (new Vector3 (0f, pixelScrollDifference, 0f)).y; 
 			newContentY = Mathf.Clamp (newContentY + contentStartPosition.y + 5f, -100f, 100f);
 			contentHolder.transform.localPosition = new Vector3 (0f, newContentY, 0f);
 		}
-
-
+			
 		else {
 			float currentHeight = contentHolder.transform.localPosition.y;
-
-
 			contentHolder.transform.localPosition = new Vector3 (0f, Mathf.Lerp (currentHeight, targetCameraHeight, Time.deltaTime / 2f), 0f);
-		}
-
-
-
-		// --- --- --- --- --- --- --- --- ---  --- --- --- --- --- --- //
-
-
+		} // --- --- --- --- close scrolling ctrls --- --- --- --- //
 	}
+		
 
-	public void SetOccupied(bool _occupied, GameObject _occupiedBy){
-		occupied = _occupied;
-		occupiedBy = _occupiedBy;
-		Debug.Log("Occupied by: " + _occupiedBy + " (" + occupied + ")");
-	}
-
-
+	// --- --- --- --- --- ---  --- ADD COMMENT & MANAGE COMMENT LISTS --- --- --- --- --- --- --- //
 	public void AddComment () {
 
-
 		if (commentNo == 0) {
-
 			input = Instantiate (inputPrefab, Vector3.zero, Quaternion.identity) as GameObject;
-			//input = Instantiate (commentPrefab, Vector3.zero, Quaternion.identity) as GameObject;
 			commentNo++;
 
 		} else if (commentNo >= 1 && hasGameStarted == true) {
 			commentNo++;
 
-			// instantiates Comment
+			// instantiates comment & inserts it into commentHolder
 			GameObject comment = Instantiate (commentPrefab, Vector3.zero, Quaternion.identity) as GameObject;
 			comment.transform.SetParent (contentHolder.transform);
 
-
-			//defines comment position and adds comment into commentsList
+			// defines comment position and adds comment into commentsList
 			comment.transform.localPosition = new Vector3 (0f, 3.9f * comments.Count + verticalOffset, 0f);
-			comment.GetComponent<CommentManager> ().commentNo = commentNo;
-			comment.GetComponent<CommentManager> ().commentText.text = WrapText (CSVParser.getCellText (2, commentNo), 30);
-			comment.GetComponent<CommentManager> ().nameText.text = CSVParser.getCellText (1, commentNo);
 
-			comment.GetComponent<CommentManager> ().deleteImpact = int.Parse(CSVParser.getCellText (7, commentNo));	// ***** new
-			comment.GetComponent<CommentManager> ().acceptImpact = int.Parse(CSVParser.getCellText (8, commentNo));	// ***** new
-
-
+			// inserts texts into textmeshes
 			CommentManager commentManager = comment.GetComponent<CommentManager> ();
+			commentManager.InsertTexts(commentNo);
+
+			// adds generated user-images 
 			Color[] palette = new Color[2]; 
 			commentManager.commentTexture.material.mainTexture = IconGenerator.create (8, Color.black, true, palette);
-			comments.Add (comment);
 
+			// adds comments into commentlist
+			comments.Add (comment);
 		}
 
 		input.transform.localPosition = new Vector3 (0f, -3.9f * comments.Count + verticalOffset, 0f);
@@ -171,53 +146,13 @@ public class ContentManager : MonoBehaviour {
 
 		if (comments.Count >= 10) {
 			GameObject lastComment = comments[comments.Count-10];
-			if (lastComment != null) {	// XXXXX new
+			if (lastComment != null) {	
 				lastComment.GetComponent<CommentManager> ().Accept();
 			}
 			Destroy (lastComment);
-
-			}
-	}
-
-	// *** new method vvv
-	// Wrap text by line height
-	private string WrapText(string input, int lineLength){
-
-		// Split string by char " "         
-		string[] words = input.Split(" "[0]);
-
-		// Prepare result
-		string result = "";
-
-		// Temp line string
-		string line = "";
-
-		// for each all words        
-		foreach(string s in words){
-			// Append current word into line
-			string temp = line + " " + s;
-
-			// If line length is bigger than lineLength
-			if(temp.Length > lineLength){
-
-				// Append current line into result
-				result += line + "\n";
-				// Remain word append into new line
-				line = s;
-			}
-			// Append current word into current line
-			else {
-				line = temp;
-			}
 		}
-
-		// Append last line into result        
-		result += line;
-
-		// Remove first " " char
-		return result.Substring(1,result.Length-1);
-	}
-
+	} // --- --- --- --- --- --- --- --- close add comment --- --- --- --- --- --- //
+		
 
 	public void addDeletedComment(string[] commentInfo)
 	{

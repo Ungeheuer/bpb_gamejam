@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿
+using UnityEngine;
 using System.Collections;
 
 public class ButtonController : MonoBehaviour {
@@ -6,16 +7,15 @@ public class ButtonController : MonoBehaviour {
 	[SerializeField] string name = "";
 
 	CommentManager timerManager;
+	ContentManager contentManager;
 
 	// Use this for initialization
 	void Start () {
 		timerManager = this.gameObject.transform.parent.GetComponent<CommentManager> ();
+		contentManager = GameObject.Find ("ContentManager").GetComponent<ContentManager> ();
 	}
 
 	void OnMouseUp(){
-		if (!ContentManager.single.occupied) {
-			Debug.Log (this.gameObject.name + " got pushed!");
-			timerManager.HitButton (name);
-		}
+		timerManager.ButtonDelete();
 	}
 }
