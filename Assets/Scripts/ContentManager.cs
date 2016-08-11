@@ -134,8 +134,8 @@ public class ContentManager : MonoBehaviour {
 			commentManager.InsertTexts(commentNo);
 
 			// adds generated user-images 
-			Color[] palette = new Color[2]; 
-			commentManager.commentTexture.material.mainTexture = IconGenerator.create (8, Color.black, true, palette);
+			Color[] palette = new Color[] {new Color(1f, 0.48f, 0.67f), new Color (0.251f, 0.777f, 0.737f)}; 
+			commentManager.commentTexture.material.mainTexture = IconGenerator.create (8, Color.black, palette);
 
 			// adds comments into commentlist
 			comments.Add (comment);

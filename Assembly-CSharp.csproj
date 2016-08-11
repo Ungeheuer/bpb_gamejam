@@ -60,6 +60,7 @@
      <Compile Include="Assets\Scripts\StartGame.cs" />
      <Compile Include="Assets\Scripts\WrapText.cs" />
      <Compile Include="Assets\Scripts\userCounter.cs" />
+     <Compile Include="Assets\Toggle.cs" />
      <None Include="Assets\Interface\Fonts\Josefin_Sans\OFL.txt" />
      <None Include="Assets\Interface\Fonts\Roboto_Mono\LICENSE.txt" />
      <None Include="Assets\Interface\Fonts\Indie_Flower\OFL.txt" />

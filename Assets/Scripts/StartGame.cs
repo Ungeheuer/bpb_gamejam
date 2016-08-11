@@ -2,17 +2,15 @@
 using System.Collections;
 
 public class StartGame : MonoBehaviour {
-
+	Canvas cv;
 	// Use this for initialization
 	void Start () {
+	//	cv = GameObject.Find ("Canvas");
 	
 	}
 	
 	// Update is called once per frame
-	void Update () {
-		if (Input.GetMouseButtonDown (0)) {
-			Application.LoadLevel ("Main");
-		}
-
+	public void loadLevel () {
+		Application.LoadLevel ("Main");
 	}
 }
