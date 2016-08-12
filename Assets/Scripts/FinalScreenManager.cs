@@ -2,6 +2,18 @@
 using System.Collections;
 
 public class FinalScreenManager : MonoBehaviour {
+
+	// scrolling & mouse-ctrls
+	[SerializeField] int toScrollViewFrames = 5;
+	[SerializeField] float verticalOffset = 2.5f;
+	float scrollViewLimit = 5f;
+	float scrollViewStart;
+	Vector3 contentStartPosition;
+	bool scrolling = false;
+	float targetCameraHeight = 0f;
+
+	bool mouseDown = false;
+	int mouseDownFrames;
 	
 	[SerializeField] TextMesh userCountText;
 	[SerializeField] TextMesh commentText;
@@ -22,20 +34,46 @@ public class FinalScreenManager : MonoBehaviour {
 		cm.SetActive(false);
 		hm.SetActive(false);
 		cc.SetActive(false);
-
 	}
 
-	// Use this for initialization
+
 	void Start () {
 		
 		userCountText.text = lt.GetComponent<LevelTimer>().finalUserCount + " user";
-		commentText.text = cm.GetComponent<ContentManager>().MistakeReview();
+		commentText.text = WrapText.wrap (cm.GetComponent<ContentManager>().MistakeReview(), 40);
 	}
-	
-	// Update is called once per frame
-	void Update () {
 
 
+	void Update() {
+
+		// --- --- --- ---  --- SCROLLING Controls --- --- --- --- --- //
+		if (Input.GetMouseButtonDown (0)) {
+			Debug.Log ("mouse down!");
+			mouseDown = true;
+			mouseDownFrames = 0;
+
+		} else if (Input.GetMouseButtonUp (0)) {
+			mouseDown = false;
+			scrolling = false;
+
+		} else if (!scrolling && mouseDown) {
+			mouseDownFrames++;
+
+			if (mouseDownFrames >= toScrollViewFrames) {
+				scrollViewStart = Input.mousePosition.y;
+				scrolling = true;
+
+			}
+		} else if (scrolling && mouseDown) {
+				float pixelScrollDifference = Input.mousePosition.y - scrollViewStart;
+				float newContentY = Camera.main.ScreenToWorldPoint (new Vector3 (0f, pixelScrollDifference, 0f)).y; 
+				newContentY = Mathf.Clamp (newContentY + contentStartPosition.y + 5f, -100f, 100f);
 	
+				Vector3 myTextPos = this.transform.localPosition;
+
+				this.transform.localPosition = new Vector3 (myTextPos.x, newContentY, 0f);
+				this.transform.localPosition = new Vector3 (myTextPos.x, newContentY, 0f);
+			//	Debug.Log ("newContentY : " + newContentY);
+		} // --- --- --- --- close scrolling ctrls --- --- --- --- //
 	}
 }

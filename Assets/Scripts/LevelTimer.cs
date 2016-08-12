@@ -14,15 +14,10 @@ public class LevelTimer : MonoBehaviour {
 	void Start () {
 		levelTimer *= minute;
 		cm = GameObject.Find ("ContentManager").GetComponent<ContentManager> ();
-
+		users = GameObject.Find ("HeaderManager").GetComponent<userCounter> ();
 	}
 
 
-	void Awake () {
-		users = this.gameObject.AddComponent<userCounter> ();
-	}
-	
-	// Update is called once per frame
 	void Update () {
 
 		if (gameOver) {
@@ -31,11 +26,11 @@ public class LevelTimer : MonoBehaviour {
 
 		if (cm.hasGameStarted == true) {
 			levelTimer -= Time.deltaTime;
-			finalUserCount = users.userCount;
 			//Debug.Log ("Leveltimer: " + levelTimer);
 
 			if (levelTimer <= 0f) {
 				Debug.Log ("time is up!");
+				finalUserCount = users.userCount;
 				gameOver = true;
 				Application.LoadLevelAdditive ("EndScreen");
 		//		DestroyImmediate(this.gameObject);
