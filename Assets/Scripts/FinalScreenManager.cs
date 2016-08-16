@@ -38,9 +38,17 @@ public class FinalScreenManager : MonoBehaviour {
 
 
 	void Start () {
-		
-		userCountText.text = lt.GetComponent<LevelTimer>().finalUserCount + " user";
-		commentText.text = WrapText.wrap (cm.GetComponent<ContentManager>().MistakeReview(), 40);
+		int finalUserCount = lt.GetComponent<LevelTimer> ().finalUserCount;
+		if (finalUserCount < 100) {
+			userCountText.text = "auf " + finalUserCount + " User geschrumpft.";
+			userCountText.color = Color.red;
+		} else if (finalUserCount > 100) {
+			userCountText.text = "auf " + finalUserCount + " User gewachsen.";
+			userCountText.color = Color.green;
+		} else {
+			userCountText.text = "weder gewachsen noch geschrumpft.";
+		}
+		commentText.text = cm.GetComponent<ContentManager>().MistakeReview();
 	}
 
 

@@ -49,7 +49,7 @@ public class CommentManager : MonoBehaviour {
 	public void ButtonDelete(){
 		GameObject.Find ("HeaderManager").GetComponent<userCounter> ().ImpactOnUsers (deleteImpact);
 		cm.addDeletedComment(new string[] {	// name, text, delete
-			CSVParser.getCellText (1, commentNo), CSVParser.getCellText (2, commentNo), CSVParser.getCellText (7, commentNo), "Zensur?"});
+			CSVParser.getCellText (1, commentNo), CSVParser.getCellText (2, commentNo), CSVParser.getCellText (7, commentNo), "ungerechtfertigte \"Zensur\""});
 		Destroy (this.gameObject);
 	} // --- --- --- --- --- --- close button delete --- --- --- --- --- --- --- --- --- //
 
@@ -58,7 +58,7 @@ public class CommentManager : MonoBehaviour {
 	public void Accept(){
 		GameObject.Find ("HeaderManager").GetComponent<userCounter> ().ImpactOnUsers (acceptImpact);
 		cm.addDeletedComment(new string[] {	// name, text, insert
-			CSVParser.getCellText (1, commentNo), CSVParser.getCellText (2, commentNo), CSVParser.getCellText (8, commentNo), "AGB-Verstoß"});
+			CSVParser.getCellText (1, commentNo), CSVParser.getCellText (2, commentNo), CSVParser.getCellText (8, commentNo), "ungestrafter AGB-Verstoß"});
 	} // --- --- --- --- --- --- close comment accepted --- --- --- --- --- --- --- --- --- //
 	// --- --- --- --- --- --- --- --- close button & saving section --- --- --- --- --- -- //	
 

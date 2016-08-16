@@ -120,7 +120,6 @@ public class ContentManager : MonoBehaviour {
 			commentNo++;
 
 		} else if (commentNo >= 1 && hasGameStarted == true) {
-			commentNo++;
 
 			// instantiates comment & inserts it into commentHolder
 			GameObject comment = Instantiate (commentPrefab, Vector3.zero, Quaternion.identity) as GameObject;
@@ -139,6 +138,8 @@ public class ContentManager : MonoBehaviour {
 
 			// adds comments into commentlist
 			comments.Add (comment);
+			
+			commentNo++;
 		}
 
 		input.transform.localPosition = new Vector3 (0f, -3.9f * comments.Count + verticalOffset, 0f);
@@ -157,8 +158,6 @@ public class ContentManager : MonoBehaviour {
 	public void addDeletedComment(string[] commentInfo)
 	{
 		deletedComments.Add (commentInfo);
-		Debug.Log ("Amount of deleted comments: " + deletedComments.Count);
-		Debug.Log ("Last deleted comment: " + commentInfo [0] + " - " + commentInfo [1]);
 	}
 
 
@@ -166,12 +165,12 @@ public class ContentManager : MonoBehaviour {
 	public string MistakeReview() {
 		string output = "";
 		for (int i=0; i<deletedComments.Count; i++) {
-			Debug.Log(deletedComments [i] [2]);
 			if (int.Parse(deletedComments [i] [2]) < 0) {
-				output = output + deletedComments [i] [0] + ": " + deletedComments [i] [1] + " - " + deletedComments [i] [3] + " (" + deletedComments [i] [2] + ")\n";
+				string addToOutput = WrapText.wrap(deletedComments [i] [0] + ": " + deletedComments [i] [1], 72) + "\n - "
+					+ deletedComments [i] [3] + " (" + deletedComments [i] [2] + ")";
+				output = output + addToOutput + "\n\n";
 			}
 		}
-		Debug.Log (output);
 		return output;
 	}
 
