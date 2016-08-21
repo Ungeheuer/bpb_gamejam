@@ -81,7 +81,6 @@ public class FinalScreenManager : MonoBehaviour {
 
 				this.transform.localPosition = new Vector3 (myTextPos.x, newContentY, 0f);
 				this.transform.localPosition = new Vector3 (myTextPos.x, newContentY, 0f);
-			//	Debug.Log ("newContentY : " + newContentY);
 		} // --- --- --- --- close scrolling ctrls --- --- --- --- //
 	}
 }
